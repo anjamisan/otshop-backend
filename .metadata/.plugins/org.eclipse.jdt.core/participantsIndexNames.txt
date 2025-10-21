@@ -1,0 +1,5 @@
+INDEX VERSION 1.134
+C:\Users\anja\Projects\online-thrift-shop\otshop-backend\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3150664872.index
+\risKladionicaProjekat\src
+C:\Users\anja\Projects\online-thrift-shop\otshop-backend\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2914592893.index
+\KladionicaWeb\src\main\java
