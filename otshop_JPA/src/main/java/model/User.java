@@ -19,7 +19,7 @@ public class User implements Serializable {
 	
 	private String email;
 
-	private byte jeAdmin;
+	private boolean jeAdmin;
 
 	private String sifra;
 
@@ -44,11 +44,11 @@ public class User implements Serializable {
 		this.idUser = idUser;
 	}
 
-	public byte getJeAdmin() {
+	public boolean isAdmin() {
 		return this.jeAdmin;
 	}
 
-	public void setJeAdmin(byte jeAdmin) {
+	public void setJeAdmin(boolean jeAdmin) {
 		this.jeAdmin = jeAdmin;
 	}
 
