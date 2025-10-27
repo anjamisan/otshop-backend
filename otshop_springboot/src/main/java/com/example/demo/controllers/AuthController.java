@@ -11,13 +11,18 @@ import com.example.demo.util.JwtTokenProvider;
 import model.User;
 
 import com.example.demo.services.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,21 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider tokenProvider;
-    private final UserService userService; 
-    
-    // --- Constructor Injection ---
+	@Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthController(AuthenticationManager authenticationManager, 
-                          JwtTokenProvider tokenProvider, 
-                          UserService userService) {
-        this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
-        this.userService = userService;
-    }
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private UserService userService;
 
     // --- Login Endpoint Implementation ---
 
@@ -80,12 +81,20 @@ public class AuthController {
         }
     }
     
-    // --- Profile Endpoint (For Angular's loadUserState) ---
-    /*
     @GetMapping("/profile")
-    public ResponseEntity<UserDTO> getAuthenticatedUserProfile() {
-        // Implementation for the /profile endpoint (requires JWT filter setup)
-        // ... (We can implement this next)
+    public ResponseEntity<UserDto> getAuthenticatedUserProfile(
+        @AuthenticationPrincipal CustomUserDetails principal
+    ) {
+        // We already know the user is authenticated and the token is valid,
+        // because the JWT filter set the principal.
+        
+        // 1. Get the underlying User entity
+        User userEntity = principal.getUserEntity();
+
+        // 2. Fetch the most current DTO data (optional: use service for complex fetch)
+        // Using a direct DTO constructor for simplicity here:
+        UserDto userProfile = new UserDto(userEntity.getIdUser(), userEntity.getUsername(), userEntity.getEmail(), userEntity.isAdmin());
+
+        return ResponseEntity.ok(userProfile);
     }
-    */
 }

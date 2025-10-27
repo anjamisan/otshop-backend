@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.example.demo.OtshopSpringbootApplication;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.util.CustomUserDetails;
 
 import model.User;
-import repositories.UserRepository;
 
 
 @Service
@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
  @Override
  public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
      // ovaj metod se implicitno poziva iz AuthControllera prilikom autentifikacije
-     User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+     User user = userRepository.findByUsername(usernameOrEmail)
              .orElseThrow(() -> 
                  new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
 
