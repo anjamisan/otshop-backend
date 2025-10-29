@@ -1,84 +1,91 @@
 package com.example.demo.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // Modern annotation
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain; // New configuration class
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Enables @PreAuthorize for method-level security
 public class SecurityConfig {
+	@Autowired 
+    private AuthenticationProvider authenticationProvider;
+    
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // --- BEANS: Core Security Components ---
-
-    /**
-     * Exposes the AuthenticationManager bean, required by the AuthController for login.
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    /**
-     * Defines the PasswordEncoder (BCrypt is standard and recommended).
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * Defines the custom JWT Filter bean.
-     */
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        // Note: Autowired dependencies inside the filter will be handled by Spring
-        return new JwtAuthenticationFilter();
-    }
-
-    // --- SECURITY FILTER CHAIN CONFIGURATION ---
-
-    /**
-     * Defines the modern SecurityFilterChain, replacing WebSecurityConfigurerAdapter.
-     */
-    @Bean
+    @SuppressWarnings("removal")
+	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            // 1. Configure CORS and disable CSRF (required for stateless APIs)
-            .cors(AbstractHttpConfigurer::disable)
-            .csrf(AbstractHttpConfigurer::disable)
-            
-            // 2. Set Session Management to STATELESS (crucial for JWT)
-            .sessionManagement(session -> session
+        http.csrf()
+                .disable()
+                .authorizeHttpRequests()
+                .requestMatchers("api/auth/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            
-            // 3. Define Authorization Rules using Lambda DSL
-            .authorizeHttpRequests(auth -> auth
-                // Public Endpoints (accessible without a token)
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll() 
-                
-                // All other /api/ routes MUST be authenticated (protected by JWT filter)
-                .requestMatchers("/api/**").authenticated() 
-                
-                // Any other request (e.g., static files, favicon)
-                .anyRequest().permitAll()
-            )
-            
-            // 4. Integrate the JWT Filter into the security chain
-            // It runs before the standard username/password filter
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-            
+                .and()
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+    
+//    	    http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
+//    	      .permitAll())
+//    	      .csrf(AbstractHttpConfigurer::disable);
+//    	    
+
         return http.build();
     }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow Angular
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true); // if you use cookies / session auth
+//        //configuration.setAllowedOrigins(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("*"));
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
+//        configuration.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+//        configuration.setAllowedMethods(List.of("GET","POST"));
+//        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//
+//        source.registerCorsConfiguration("/**",configuration);
+//
+//        return source;
+//    }
 }

@@ -1,6 +1,10 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+
+
 import jakarta.persistence.*;
 
 
@@ -61,11 +65,12 @@ public class User implements Serializable {
 	}
 
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 
 }

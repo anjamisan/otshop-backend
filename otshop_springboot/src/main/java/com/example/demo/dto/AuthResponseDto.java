@@ -4,36 +4,34 @@ public class AuthResponseDto {
 
     // 1. Fields
     private String jwtToken;
-    private UserDto user;
+    private long expiresIn;
 
     // 2. Default (No-Argument) Constructor
     // Required by many frameworks (like Jackson for JSON deserialization)
     public AuthResponseDto() {
     }
 
-    // 3. Full Constructor (Recommended for creating the object in the Service layer)
-    public AuthResponseDto(String jwtToken, UserDto user) {
-        this.jwtToken = jwtToken;
-        this.user = user;
-    }
+    public AuthResponseDto(String jwtToken, long expiresIn) {
+		super();
+		this.jwtToken = jwtToken;
+		this.expiresIn = expiresIn;
+	}
+ 
+	public String getJwtToken() {
+		return jwtToken;
+	}
 
-    // 4. Getters
-    
-    public String getJwtToken() {
-        return jwtToken;
-    }
+	public void setJwtToken(String jwtToken) {
+		this.jwtToken = jwtToken;
+	}
 
-    public UserDto getUser() {
-        return user;
-    }
+	public long getExpiresIn() {
+		return expiresIn;
+	}
 
-    // 5. Setters
+	public void setExpiresIn(long expiresIn) {
+		this.expiresIn = expiresIn;
+	}
 
-    public void setJwtToken(String jwtToken) {
-        this.jwtToken = jwtToken;
-    }
-
-    public void setUser(UserDto user) {
-        this.user = user;
-    }
+	
 }
