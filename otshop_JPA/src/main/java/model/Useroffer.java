@@ -1,14 +1,9 @@
 package model;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
+import jakarta.persistence.*;
 
-
-/**
- * The persistent class for the useroffer database table.
- * 
- */
 @Entity
 @NamedQuery(name="Useroffer.findAll", query="SELECT u FROM Useroffer u")
 public class Useroffer implements Serializable {
@@ -25,17 +20,18 @@ public class Useroffer implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
 
-	private int user_idUser;
-
-	//bi-directional many-to-one association to Product
 	@ManyToOne
+	@JoinColumn(name = "user_idUser")
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "product_idProduct")
 	private Product product;
 
-	public Useroffer() {
-	}
+	public Useroffer() {}
 
 	public int getIdUserOffer() {
-		return this.idUserOffer;
+		return idUserOffer;
 	}
 
 	public void setIdUserOffer(int idUserOffer) {
@@ -43,7 +39,7 @@ public class Useroffer implements Serializable {
 	}
 
 	public int getOfferedPrice() {
-		return this.offeredPrice;
+		return offeredPrice;
 	}
 
 	public void setOfferedPrice(int offeredPrice) {
@@ -51,7 +47,7 @@ public class Useroffer implements Serializable {
 	}
 
 	public String getStatus() {
-		return this.status;
+		return status;
 	}
 
 	public void setStatus(String status) {
@@ -59,27 +55,28 @@ public class Useroffer implements Serializable {
 	}
 
 	public Date getTimestamp() {
-		return this.timestamp;
+		return timestamp;
 	}
 
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 
-	public int getUser_idUser() {
-		return this.user_idUser;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUser_idUser(int user_idUser) {
-		this.user_idUser = user_idUser;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Product getProduct() {
-		return this.product;
+		return product;
 	}
 
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-
+	
+	
 }

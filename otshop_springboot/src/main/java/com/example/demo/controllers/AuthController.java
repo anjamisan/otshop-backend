@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.LoginRequestDto;
+import com.example.demo.dto.RegisterUserDto;
 import com.example.demo.services.AuthenticationService;
 import com.example.demo.services.JwtService;
 import com.example.demo.util.CustomUserDetails;
@@ -31,14 +32,14 @@ public class AuthController {
         this.authenticationService = authenticationService;
     }
 
-//    @PostMapping("/signup")
-//    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
-//        User registeredUser = authenticationService.signup(registerUserDto);
-//
-//        return ResponseEntity.ok(registeredUser);
-//    }
+	
+	@PostMapping("/signup")
+	public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) { // User
+		User registeredUser = authenticationService.signup(registerUserDto); // // return
+		return ResponseEntity.ok(registeredUser);
+	}
 
-    @PostMapping("/login")
+	@PostMapping("/login")
     public ResponseEntity<AuthResponseDto> authenticate(@RequestBody LoginRequestDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 

@@ -1,13 +1,9 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Date;
 import jakarta.persistence.*;
 
-
-/**
- * The persistent class for the purchase database table.
- * 
- */
 @Entity
 @NamedQuery(name="Purchase.findAll", query="SELECT p FROM Purchase p")
 public class Purchase implements Serializable {
@@ -15,59 +11,52 @@ public class Purchase implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idOrder;
+	private int idPurchase;
 
-	private int finalPrice;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timestamp;
 
-	private String status;
-
-	private int user_idUser;
-
-	//bi-directional many-to-one association to Product
 	@ManyToOne
+	@JoinColumn(name="user_idUser")
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name="product_idProduct")
 	private Product product;
 
-	public Purchase() {
+	public Purchase() {}
+
+	public int getIdPurchase() {
+		return idPurchase;
 	}
 
-	public int getIdOrder() {
-		return this.idOrder;
+	public void setIdPurchase(int idPurchase) {
+		this.idPurchase = idPurchase;
 	}
 
-	public void setIdOrder(int idOrder) {
-		this.idOrder = idOrder;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public int getFinalPrice() {
-		return this.finalPrice;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	public void setFinalPrice(int finalPrice) {
-		this.finalPrice = finalPrice;
+	public User getUser() {
+		return user;
 	}
 
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public int getUser_idUser() {
-		return this.user_idUser;
-	}
-
-	public void setUser_idUser(int user_idUser) {
-		this.user_idUser = user_idUser;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Product getProduct() {
-		return this.product;
+		return product;
 	}
 
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-
+	
+	
 }

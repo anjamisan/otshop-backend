@@ -1,67 +1,47 @@
 package model;
 
+
+
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-
-
+import java.util.List;
 import jakarta.persistence.*;
 
-
-/**
- * The persistent class for the user database table.
- * 
- */
 @Entity
-@NamedQuery(name="User.findAll", query="SELECT u FROM User u")
+@Table(name = "`user`")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUser;
+
+	private String username;
 	
 	private String email;
 
-	private boolean jeAdmin;
+	private String password;
 
-	private String sifra;
-
-	private String username;
-
-	public User() {
-	}
-
-	public String getEmail() {
-		return this.email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	private String fullName;
 	
+	private boolean isAdmin;
+
+	@OneToMany(mappedBy="user")
+	private List<Savedproduct> savedProducts;
+
+	@OneToMany(mappedBy="user")
+	private List<Purchase> purchases;
+
+	@OneToMany(mappedBy="user")
+	private List<Useroffer> userOffers;
+
+	public User() {}
+
 	public int getIdUser() {
-		return this.idUser;
+		return idUser;
 	}
 
 	public void setIdUser(int idUser) {
 		this.idUser = idUser;
-	}
-
-	public boolean isAdmin() {
-		return this.jeAdmin;
-	}
-
-	public void setJeAdmin(boolean jeAdmin) {
-		this.jeAdmin = jeAdmin;
-	}
-
-	public String getSifra() {
-		return this.sifra;
-	}
-
-	public void setSifra(String sifra) {
-		this.sifra = sifra;
 	}
 
 	public String getUsername() {
@@ -72,5 +52,53 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
+	public String getEmail() {
+		return email;
+	}
 
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<Savedproduct> getSavedProducts() {
+		return savedProducts;
+	}
+
+	public void setSavedProducts(List<Savedproduct> savedProducts) {
+		this.savedProducts = savedProducts;
+	}
+
+	public List<Purchase> getPurchases() {
+		return purchases;
+	}
+
+	public void setPurchases(List<Purchase> purchases) {
+		this.purchases = purchases;
+	}
+
+	public List<Useroffer> getUserOffers() {
+		return userOffers;
+	}
+
+	public void setUserOffers(List<Useroffer> userOffers) {
+		this.userOffers = userOffers;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	
 }
