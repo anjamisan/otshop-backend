@@ -35,7 +35,7 @@ public class AuthenticationService {
         
 		user.setEmail(input.getEmail());
 		user.setUsername(input.getUsername());
-		user.setAdmin(input.isAdmin());
+		user.setAdmin(true); //PROMENI U FALSE NAKON UNOSA ADMINA
 		user.setPassword(passwordEncoder.encode(input.getPassword()));
 
         return userRepository.save(user);

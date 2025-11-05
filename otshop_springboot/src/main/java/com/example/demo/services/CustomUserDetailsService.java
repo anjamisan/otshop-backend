@@ -15,30 +15,30 @@ import com.example.demo.util.CustomUserDetails;
 
 import model.User;
 
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final OtshopSpringbootApplication otshopSpringbootApplication;
+	private final OtshopSpringbootApplication otshopSpringbootApplication;
 
- private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
- public CustomUserDetailsService(UserRepository userRepository, OtshopSpringbootApplication otshopSpringbootApplication) {
-     this.userRepository = userRepository;
-     this.otshopSpringbootApplication = otshopSpringbootApplication;
- }
+	public CustomUserDetailsService(UserRepository userRepository,
+			OtshopSpringbootApplication otshopSpringbootApplication) {
+		this.userRepository = userRepository;
+		this.otshopSpringbootApplication = otshopSpringbootApplication;
+	}
 
- @Override
- public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-     // ovaj metod se implicitno poziva iz AuthControllera prilikom autentifikacije
-     User user = userRepository.findByUsername(usernameOrEmail)
-             .orElseThrow(() -> 
-                 new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
+	@Override
+	public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+		// ovaj metod se implicitno poziva iz AuthControllera prilikom autentifikacije
+		User user = userRepository.findByUsername(usernameOrEmail).orElseThrow(
+				() -> new UsernameNotFoundException("User not found with username or email: " + usernameOrEmail));
 
-     // 2. Return a Spring Security UserDetails object
-     //    (You might use Spring's User class or a custom class that implements UserDetails)
-  // 2. Wrap the database entity into your custom UserDetails class
-     return new CustomUserDetails(user);
- }
- 
+		// 2. Return a Spring Security UserDetails object
+		// (You might use Spring's User class or a custom class that implements
+		// UserDetails)
+		// 2. Wrap the database entity into your custom UserDetails class
+		return new CustomUserDetails(user);
+	}
+
 }

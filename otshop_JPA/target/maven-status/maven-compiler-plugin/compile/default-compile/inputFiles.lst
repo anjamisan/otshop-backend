@@ -1,8 +1,11 @@
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Product.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\SavedproductPK.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\User.java
+C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\AgesexHasCategory.java
+C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\OfferStatus.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Productimage.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Savedproduct.java
+C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\TestDB.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Useroffer.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Agesex.java
 C:\Users\anja\Projects\online-thrift-shop\otshop-backend\otshop_JPA\src\main\java\model\Category.java

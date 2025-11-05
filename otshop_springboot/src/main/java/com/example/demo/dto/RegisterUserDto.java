@@ -4,17 +4,15 @@ public class RegisterUserDto {
 	
     private String username;
     private String email;
-    private boolean isAdmin; 
     private String password;
 
     
 
 	// 1. Full Constructor (Recommended for creating DTOs)
-    public RegisterUserDto(String username, String password, String email, boolean isAdmin) {
+    public RegisterUserDto(String username, String password, String email) {
         this.password = password;
         this.username = username;
         this.email = email;
-        this.isAdmin = isAdmin;
     }
 
     // 2. Default (No-Argument) Constructor (Often required by frameworks like Spring/Jackson)
@@ -30,9 +28,6 @@ public class RegisterUserDto {
         return email;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
     
     public String getPassword() {
 		return password;
@@ -50,7 +45,4 @@ public class RegisterUserDto {
         this.email = email;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
 }

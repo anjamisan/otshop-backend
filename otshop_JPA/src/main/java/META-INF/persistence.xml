@@ -6,7 +6,6 @@
 
     <persistence-unit name="otshop_JPA" transaction-type="RESOURCE_LOCAL">
 
-        <!-- ✅ REGISTER ALL ENTITY CLASSES HERE -->
 
         <properties>
             <property name="jakarta.persistence.jdbc.url"

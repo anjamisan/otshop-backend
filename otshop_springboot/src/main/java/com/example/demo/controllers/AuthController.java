@@ -3,8 +3,11 @@ package com.example.demo.controllers;
 
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dto.AuthResponseDto;
 import com.example.demo.dto.LoginRequestDto;
 import com.example.demo.dto.RegisterUserDto;
+import com.example.demo.dto.UserDto;
 import com.example.demo.services.AuthenticationService;
 import com.example.demo.services.JwtService;
+import com.example.demo.services.UserService;
 import com.example.demo.util.CustomUserDetails;
 
 import model.User;
@@ -23,20 +28,29 @@ import model.User;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class AuthController {
-    private final JwtService jwtService;
+	
+	@Autowired
+    JwtService jwtService;
     
-    private final AuthenticationService authenticationService;
+	@Autowired
+	AuthenticationService authenticationService;
+	
+	@Autowired
+	UserService userService;
 
-    public AuthController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-    }
 
 	
 	@PostMapping("/signup")
-	public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) { // User
+	public ResponseEntity<UserDto> register(@RequestBody RegisterUserDto registerUserDto) { // User
 		User registeredUser = authenticationService.signup(registerUserDto); // // return
-		return ResponseEntity.ok(registeredUser);
+		
+		UserDto userDto = new UserDto(
+		        registeredUser.getIdUser(),
+		        registeredUser.getUsername(),
+		        registeredUser.getEmail(),
+		        registeredUser.isAdmin()
+		    );
+		return ResponseEntity.ok(userDto);
 	}
 
 	@PostMapping("/login")
@@ -49,4 +63,14 @@ public class AuthController {
 
         return ResponseEntity.ok(loginResponse);
     }
+	
+	
+
+	@GetMapping("/profile")
+	public ResponseEntity<UserDto> profile(@AuthenticationPrincipal CustomUserDetails userDetails) {
+	    // userDetails is automatically injected based on the JWT
+	    User user = userService.findByUsername(userDetails.getUsername());
+	    return ResponseEntity.ok(new UserDto(user.getIdUser(), user.getUsername(), user.getEmail(), user.isAdmin()));
+	}
+
 }

@@ -23,14 +23,18 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-	@Autowired
-    private JwtService jwtService;
-    
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
- 
-    @Autowired
-    private HandlerExceptionResolver handlerExceptionResolver;
+	
+	private final JwtService jwtService;
+    private final CustomUserDetailsService userDetailsService;
+    private final HandlerExceptionResolver handlerExceptionResolver;
+
+    public JwtAuthenticationFilter(JwtService jwtService,
+                                   CustomUserDetailsService userDetailsService,
+                                   HandlerExceptionResolver handlerExceptionResolver) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+        this.handlerExceptionResolver = handlerExceptionResolver;
+    }
 
     @Override
     protected void doFilterInternal(

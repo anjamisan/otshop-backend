@@ -26,8 +26,6 @@ public class Product implements Serializable {
 
 	private String productName;
 
-	private byte reserved;
-
 	//bi-directional many-to-one association to Agesex
 	@ManyToOne
 	private Agesex agesex;
@@ -37,12 +35,11 @@ public class Product implements Serializable {
 	private Category category;
 
 	//bi-directional many-to-one association to Productimage
-	@OneToMany(mappedBy="product")
+	@OneToMany(mappedBy="product", cascade = CascadeType.ALL)
 	private List<Productimage> productimages;
 
-	//bi-directional many-to-one association to Purchase
-	@OneToMany(mappedBy="product")
-	private List<Purchase> purchases;
+	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+	private Purchase purchase;
 
 	//bi-directional many-to-one association to Savedproduct
 	@OneToMany(mappedBy="product")
@@ -95,13 +92,6 @@ public class Product implements Serializable {
 		this.productName = productName;
 	}
 
-	public byte getReserved() {
-		return this.reserved;
-	}
-
-	public void setReserved(byte reserved) {
-		this.reserved = reserved;
-	}
 
 	public Agesex getAgesex() {
 		return this.agesex;
@@ -141,27 +131,14 @@ public class Product implements Serializable {
 		return productimage;
 	}
 
-	public List<Purchase> getPurchases() {
-		return this.purchases;
+	public Purchase getPurchases() {
+		return this.purchase;
 	}
 
-	public void setPurchases(List<Purchase> purchases) {
-		this.purchases = purchases;
+	public void setPurchases(Purchase purchase) {
+		this.purchase = purchase;
 	}
 
-	public Purchase addPurchas(Purchase purchas) {
-		getPurchases().add(purchas);
-		purchas.setProduct(this);
-
-		return purchas;
-	}
-
-	public Purchase removePurchas(Purchase purchas) {
-		getPurchases().remove(purchas);
-		purchas.setProduct(null);
-
-		return purchas;
-	}
 
 	public List<Savedproduct> getSavedproducts() {
 		return this.savedproducts;

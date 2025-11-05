@@ -20,8 +20,8 @@ public class Purchase implements Serializable {
 	@JoinColumn(name="user_idUser")
 	private User user;
 
-	@ManyToOne
-	@JoinColumn(name="product_idProduct")
+	@OneToOne
+	@JoinColumn(name = "idProduct")
 	private Product product;
 
 	public Purchase() {}

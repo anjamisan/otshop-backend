@@ -15,7 +15,8 @@ public class Useroffer implements Serializable {
 
 	private int offeredPrice;
 
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private OfferStatus status;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
@@ -46,11 +47,11 @@ public class Useroffer implements Serializable {
 		this.offeredPrice = offeredPrice;
 	}
 
-	public String getStatus() {
+	public OfferStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(OfferStatus status) {
 		this.status = status;
 	}
 

@@ -1,6 +1,7 @@
 package com.example.demo.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,22 +16,28 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
-	@Autowired
-	private AuthenticationProvider authenticationProvider;
+public class SecurityConfig implements WebMvcConfigurer{
+	private final AuthenticationProvider authenticationProvider;
 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+    }
+	
+	
+	@Value("${app.upload.dir:${user.home}/uploads}")
+    private String uploadDir;
 
 	@SuppressWarnings("removal")
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF for testing
 				.cors(Customizer.withDefaults()) // Enable CORS
@@ -62,6 +69,13 @@ public class SecurityConfig {
 
 		//return http.build();
 	}
+	
+	//prikazivanje slika na frontendu
+	@Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadDir + "/");
+    }
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
