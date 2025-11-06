@@ -5,14 +5,14 @@ public class UserDto {
     private int idUser;
     private String username;
     private String email;
-    private boolean isAdmin; // Mapping byte jeAdmin to boolean
+    private boolean admin; // Mapping byte jeAdmin to boolean
 
     // 1. Full Constructor (Recommended for creating DTOs)
     public UserDto(int idUser, String username, String email, boolean isAdmin) {
         this.idUser = idUser;
         this.username = username;
         this.email = email;
-        this.isAdmin = isAdmin;
+        this.admin = isAdmin;
     }
 
     // 2. Default (No-Argument) Constructor (Often required by frameworks like Spring/Jackson)
@@ -35,7 +35,7 @@ public class UserDto {
 
     // Custom getter for boolean field, often named 'is...' 
     public boolean isAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     // 4. Setters
@@ -53,6 +53,6 @@ public class UserDto {
     }
 
     public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+        this.admin = isAdmin;
     }
 }

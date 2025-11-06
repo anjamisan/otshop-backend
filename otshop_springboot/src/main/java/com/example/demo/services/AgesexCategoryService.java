@@ -3,6 +3,8 @@ package com.example.demo.services;
 import model.Agesex;
 import model.Category;
 import model.AgesexHasCategory;
+import com.example.demo.dto.CategoryDto;
+import com.example.demo.dto.AgesexDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,21 +19,20 @@ import java.util.stream.Collectors;
 public class AgesexCategoryService {
 
 	@Autowired
-    AgesexRepository agesexRepository;
+	AgesexRepository agesexRepository;
 	@Autowired
-    AgesexHasCategoryRepository agesexHasCategoryRepository;
+	AgesexHasCategoryRepository agesexHasCategoryRepository;
 
-   
+	public List<AgesexDto> getAgesex() {
+		return agesexRepository.findAll().stream().map(AgesexDto::fromEntity).collect(Collectors.toList());
+	}
 
-    public List<Category> getCategoriesForAgesex(int agesexId) {
-        Agesex agesex = agesexRepository.findById(agesexId)
-                .orElseThrow(() -> new IllegalArgumentException("Agesex not found"));
+	public List<CategoryDto> getCategoriesForAgesex(int agesexId) {
+		Agesex agesex = agesexRepository.findById(agesexId)
+				.orElseThrow(() -> new IllegalArgumentException("Agesex not found"));
 
-        List<AgesexHasCategory> pairs = agesexHasCategoryRepository.findByAgesex(agesex);
+		List<AgesexHasCategory> pairs = agesexHasCategoryRepository.findByAgesex(agesex);
 
-        return pairs.stream()
-                .map(AgesexHasCategory::getCategory)
-                .collect(Collectors.toList());
-    }
+		return pairs.stream().map(AgesexHasCategory::getCategory).map(CategoryDto::fromEntity).collect(Collectors.toList());
+	}
 }
-

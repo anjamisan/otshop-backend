@@ -4,21 +4,22 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the product database table.
  * 
  */
 @Entity
-@NamedQuery(name="Product.findAll", query="SELECT p FROM Product p")
+@NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idProduct;
 
-	private String condition;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "conditionType", nullable = false)
+	private ConditionType condition;
 
 	private String description;
 
@@ -26,27 +27,27 @@ public class Product implements Serializable {
 
 	private String productName;
 
-	//bi-directional many-to-one association to Agesex
+	// bi-directional many-to-one association to Agesex
 	@ManyToOne
 	private Agesex agesex;
 
-	//bi-directional many-to-one association to Category
+	// bi-directional many-to-one association to Category
 	@ManyToOne
 	private Category category;
 
-	//bi-directional many-to-one association to Productimage
-	@OneToMany(mappedBy="product", cascade = CascadeType.ALL)
+	// bi-directional many-to-one association to Productimage
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private List<Productimage> productimages;
 
 	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
 	private Purchase purchase;
 
-	//bi-directional many-to-one association to Savedproduct
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to Savedproduct
+	@OneToMany(mappedBy = "product")
 	private List<Savedproduct> savedproducts;
 
-	//bi-directional many-to-one association to Useroffer
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to Useroffer
+	@OneToMany(mappedBy = "product")
 	private List<Useroffer> useroffers;
 
 	public Product() {
@@ -60,13 +61,13 @@ public class Product implements Serializable {
 		this.idProduct = idProduct;
 	}
 
-	public String getCondition() {
-		return this.condition;
-	}
+	public ConditionType getCondition() {
+        return condition;
+    }
 
-	public void setCondition(String condition) {
-		this.condition = condition;
-	}
+    public void setCondition(ConditionType condition) {
+        this.condition = condition;
+    }
 
 	public String getDescription() {
 		return this.description;
@@ -91,7 +92,6 @@ public class Product implements Serializable {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-
 
 	public Agesex getAgesex() {
 		return this.agesex;
@@ -138,7 +138,6 @@ public class Product implements Serializable {
 	public void setPurchases(Purchase purchase) {
 		this.purchase = purchase;
 	}
-
 
 	public List<Savedproduct> getSavedproducts() {
 		return this.savedproducts;
