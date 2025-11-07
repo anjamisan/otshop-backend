@@ -19,6 +19,10 @@ public class AgesexHasCategory implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id")
     private Category category;
+    
+    public AgesexHasCategory() {
+    	
+    }
 
     // getters and setters
     public Integer getId() { return id; }
