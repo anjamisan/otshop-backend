@@ -13,11 +13,11 @@ public class AgesexHasCategory implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "agesex_id")
+    @JoinColumn(name = "AgeSex_idAgeSex", nullable = false)
     private Agesex agesex;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "Category_idCategory", nullable = false)
     private Category category;
     
     public AgesexHasCategory() {
