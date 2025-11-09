@@ -15,6 +15,7 @@ import com.example.demo.repositories.AgesexRepository;
 import com.example.demo.repositories.CategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,19 +42,45 @@ public class AgesexCategoryService {
 	}
 	
 	public void addCategory(AddCategoryDto dto) {
-        // prvo samo kategoriju
-        Category category = new Category();
-        category.setCategoryName(dto.getCategoryName());
-        category = categoryRepository.save(category);
+        // Da bude sve malim slovima
+        String normalizedName = dto.getCategoryName().trim().toLowerCase();
 
-        // dobavim agesex po kljucu
+        // proveri jel vec postoji
+        Optional<Category> existingCategory = categoryRepository.findByCategoryName(normalizedName);
+
+        if (existingCategory.isPresent()) {
+            // proveri jel povezana vec sa istim agesex
+            Agesex agesex = agesexRepository.findById(dto.getAgesexId())
+                    .orElseThrow(() -> new IllegalArgumentException("Agesex not found"));
+
+            boolean alreadyLinked = agesexHasCategoryRepository
+                    .findByAgesexAndCategory(agesex, existingCategory.get())
+                    .isPresent();
+
+            if (alreadyLinked) {
+                throw new IllegalArgumentException("This category already exists for the selected group.");
+            }
+
+            // ako nije povezana, napravi poveynicu
+            AgesexHasCategory newLink = new AgesexHasCategory();
+            newLink.setAgesex(agesex);
+            newLink.setCategory(existingCategory.get());
+            agesexHasCategoryRepository.save(newLink);
+            return;
+        }
+
+        // napravi novu kategoriju ako ne postoji uopste
+        Category newCategory = new Category();
+        newCategory.setCategoryName(normalizedName);
+        newCategory = categoryRepository.save(newCategory);
+
+        // povezi
         Agesex agesex = agesexRepository.findById(dto.getAgesexId())
                 .orElseThrow(() -> new IllegalArgumentException("Agesex not found"));
 
-        // povezem ih u trecoj tabeli
-        AgesexHasCategory link = new AgesexHasCategory();
-        link.setAgesex(agesex);
-        link.setCategory(category);
-        agesexHasCategoryRepository.save(link);
+        AgesexHasCategory newLink = new AgesexHasCategory();
+        newLink.setAgesex(agesex);
+        newLink.setCategory(newCategory);
+        agesexHasCategoryRepository.save(newLink);
     }
 }

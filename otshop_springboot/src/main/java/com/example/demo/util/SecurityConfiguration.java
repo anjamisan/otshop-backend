@@ -2,6 +2,7 @@ package com.example.demo.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,21 +14,26 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import jakarta.servlet.MultipartConfigElement;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig implements WebMvcConfigurer{
+public class SecurityConfiguration implements WebMvcConfigurer{
 	private final AuthenticationProvider authenticationProvider;
 
-    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+    public SecurityConfiguration(AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
 	
@@ -41,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer{
 
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF for testing
 				.cors(Customizer.withDefaults()) // Enable CORS
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/test", "/api/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/uploads/**", "/api/auth/**").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider)
@@ -73,9 +79,13 @@ public class SecurityConfig implements WebMvcConfigurer{
 	//prikazivanje slika na frontendu
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		String uploadPath = "C:/Users/anja/Projects/online-thrift-shop/otshop-backend/otshop_springboot/uploads/";
+
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:" + uploadDir + "/");
+                .addResourceLocations("file:" + uploadPath)
+                .setCachePeriod(3600); // optional caching
     }
+    
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
@@ -95,6 +105,14 @@ public class SecurityConfig implements WebMvcConfigurer{
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
 	}
+	
+	@Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(DataSize.ofMegabytes(10));
+        factory.setMaxRequestSize(DataSize.ofMegabytes(10));
+        return factory.createMultipartConfig();
+    }
 
 //    @Bean
 //    CorsConfigurationSource corsConfigurationSource() {

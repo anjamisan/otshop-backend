@@ -4,13 +4,17 @@ package com.example.demo.services;
 import jakarta.transaction.Transactional;
 import model.*;
 
+
 import com.example.demo.dto.ProductCreateDto;
+import com.example.demo.dto.ProductDto;
 import com.example.demo.dto.ProductResponseDto;
 import com.example.demo.repositories.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +36,8 @@ public class ProductService {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    ProductimageRepository productImageRepository;
     @Autowired
     AgesexRepository agesexRepository;
     @Autowired
@@ -55,13 +62,19 @@ public class ProductService {
         product.setPrice(dto.getPrice());
         product.setAgesex(agesex);
         product.setCategory(category);
+        product.setCondition(ConditionType.valueOf(dto.getCondition()));
 
-        //dodeli svakoj slici unikatan id i sacuva
+        //prvo sacuvamo product bez slika kako bismo mogli slike pojedinacno
+        Product saved = productRepository.save(product);
+        System.out.println("Product saved with ID: " + saved.getIdProduct());
+
         List<Productimage> images = new ArrayList<>();
         if (dto.getImages() != null) {
             for (MultipartFile file : dto.getImages()) {
                 String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
                 Path filePath = Paths.get(uploadDir, filename);
+                System.out.println("Saving file: " + filePath.toAbsolutePath());
+
                 try {
                     Files.createDirectories(filePath.getParent());
                     Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -69,24 +82,39 @@ public class ProductService {
                     throw new RuntimeException("Failed to store file: " + file.getOriginalFilename(), e);
                 }
 
-                //u bazu ide samo url
                 Productimage image = new Productimage();
-                image.setUrl("/uploads/" + filename); // this will be accessible via static resource
-                image.setProduct(product);
+                image.setUrl("/uploads/" + filename);
+                image.setProduct(saved); 
+                productImageRepository.save(image);
                 images.add(image);
+                System.out.println("Saved image " + filename);
             }
         }
 
-        product.setProductimages(images);
-        Product saved = productRepository.save(product);
+        // Apdejt na product, dodsj slike
+        saved.setProductimages(images);
+        productRepository.save(saved);
 
-        //response DTO
+        //ResponseDto? 
         ProductResponseDto resp = new ProductResponseDto();
         resp.setIdProduct(saved.getIdProduct());
         resp.setProductName(saved.getProductName());
         resp.setPrice(saved.getPrice());
-        resp.setImageUrls(saved.getProductimages()
-                .stream().map(Productimage::getUrl).toList()); //u responsu saljemo samo urlove
+        resp.setImageUrls(images.stream().map(Productimage::getUrl).toList());
         return resp;
+    }
+
+    
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(ProductDto::new)
+                .collect(Collectors.toList());
+    }
+    
+    public ProductDto getProductById(int id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Non existent id"));
+        return new ProductDto(product);
     }
 }

@@ -5,7 +5,7 @@ public class UserDto {
     private int idUser;
     private String username;
     private String email;
-    private boolean admin; // Mapping byte jeAdmin to boolean
+    private boolean admin; 
 
     // 1. Full Constructor (Recommended for creating DTOs)
     public UserDto(int idUser, String username, String email, boolean isAdmin) {
