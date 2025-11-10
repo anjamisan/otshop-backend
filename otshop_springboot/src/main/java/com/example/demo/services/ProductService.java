@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import model.*;
 
@@ -8,6 +9,7 @@ import model.*;
 import com.example.demo.dto.ProductCreateDto;
 import com.example.demo.dto.ProductDto;
 import com.example.demo.dto.ProductResponseDto;
+import com.example.demo.dto.ProductUpdateDto;
 import com.example.demo.repositories.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,5 +118,24 @@ public class ProductService {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Non existent id"));
         return new ProductDto(product);
+    }
+    
+    @Transactional
+    public ProductDto updateProduct(int id, ProductUpdateDto dto) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        
+        Product saved = productRepository.save(product);
+        return new ProductDto(saved);
+    }
+
+    @Transactional
+    public void deleteProduct(int id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        productRepository.delete(product);
     }
 }

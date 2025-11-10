@@ -2,11 +2,13 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.ProductCreateDto;
 import com.example.demo.dto.ProductResponseDto;
+import com.example.demo.dto.UserSummaryDto;
 import com.example.demo.services.ProductService;
+import com.example.demo.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -24,11 +28,13 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/admin/products")
 @Validated
 public class AdminController {
-    private final ProductService productService;
+	
+	@Autowired
+	ProductService productService;
+    
+    @Autowired
+    UserService userService;
 
-    public AdminController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -44,6 +50,11 @@ public class AdminController {
     	ProductCreateDto dto = new ProductCreateDto(productName, condition, description, price, ageSexId, categoryId, image);
         ProductResponseDto created = productService.createProduct(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+    
+    @GetMapping
+    public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUserSummaries());
     }
 }
 

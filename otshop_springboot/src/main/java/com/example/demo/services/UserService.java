@@ -1,9 +1,12 @@
 package com.example.demo.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserSummaryDto;
 import com.example.demo.repositories.UserRepository;
 
 import model.User;
@@ -21,5 +24,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
     
-    // You would add methods like createUser(), updateUserProfile(), etc., here.
+    public List<UserSummaryDto> getAllUserSummaries() {
+        return userRepository.findAllWithPurchaseCount();
+    }
 }
