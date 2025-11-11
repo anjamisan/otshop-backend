@@ -27,13 +27,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     @Query("""
             SELECT new com.example.demo.dto.UserSummaryDto(
-                u.idUser, u.username, u.email, COUNT(p)
+                u.idUser, u.username, u.email, u.isAdmin, COUNT(p)
             )
             FROM User u
             LEFT JOIN Purchase p ON p.user = u
-            GROUP BY u.idUser, u.username, u.email
+            GROUP BY u.idUser, u.username, u.email, u.isAdmin
             ORDER BY COUNT(p) DESC
             """)
         List<UserSummaryDto> findAllWithPurchaseCount();
-    }
+    
 }

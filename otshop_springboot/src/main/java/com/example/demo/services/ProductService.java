@@ -10,6 +10,7 @@ import com.example.demo.dto.ProductCreateDto;
 import com.example.demo.dto.ProductDto;
 import com.example.demo.dto.ProductResponseDto;
 import com.example.demo.dto.ProductUpdateDto;
+import com.example.demo.dto.PurchaseDto;
 import com.example.demo.repositories.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,9 @@ public class ProductService {
     CategoryRepository categoryRepository;
     @Autowired
     AgesexHasCategoryRepository agesexHasCategoryRepository;
+    
+    @Autowired
+    PurchaseRepository purchaseRepository;
 
     
     @Transactional
@@ -125,6 +129,10 @@ public class ProductService {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         
+        if (product.isSold()) {
+            throw new IllegalStateException("Cannot edit a sold product");
+        }
+        
         product.setDescription(dto.getDescription());
         product.setPrice(dto.getPrice());
         
@@ -136,6 +144,20 @@ public class ProductService {
     public void deleteProduct(int id) {
         Product product = productRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        
+        if (product.isSold()) {
+            throw new IllegalStateException("Cannot delete a sold product");
+        }
         productRepository.delete(product);
+    }
+    
+    public PurchaseDto getPurchaseByProductId(int productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
+
+        Purchase purchase = purchaseRepository.findByProduct(product)
+                .orElseThrow(() -> new IllegalArgumentException("No purchase found for this product."));
+
+        return new PurchaseDto(purchase);
     }
 }

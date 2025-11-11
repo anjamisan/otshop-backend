@@ -5,12 +5,14 @@ public class UserSummaryDto {
     private String username;
     private String email;
     private long purchaseCount;
+    private boolean admin;
 
-    public UserSummaryDto(int idUser, String username, String email, long purchaseCount) {
+    public UserSummaryDto(int idUser, String username, String email, boolean admin, long purchaseCount) {
         this.idUser = idUser;
         this.username = username;
         this.email = email;
         this.purchaseCount = purchaseCount;
+        this.admin = admin;
     }
 
     public int getIdUser() {
@@ -28,4 +30,10 @@ public class UserSummaryDto {
     public long getPurchaseCount() {
         return purchaseCount;
     }
+
+	public boolean isAdmin() {
+		return admin;
+	}
+    
+    
 }

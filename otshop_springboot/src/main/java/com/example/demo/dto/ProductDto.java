@@ -19,6 +19,8 @@ public class ProductDto {
 
     // image URLs (from Productimage)
     private List<String> imageUrls;
+    
+    private boolean sold;
 
     // Constructors
     public ProductDto() {}
@@ -42,6 +44,7 @@ public class ProductDto {
                     .map(Productimage::getUrl)
                     .collect(Collectors.toList());
         }
+        this.sold = product.getPurchases() != null;
     }
 
     // Getters and setters
@@ -107,5 +110,13 @@ public class ProductDto {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
+    }
+    
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void setSold(boolean sold) {
+        this.sold = sold;
     }
 }

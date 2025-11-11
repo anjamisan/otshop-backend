@@ -25,7 +25,7 @@ import com.example.demo.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/admin/products")
+@RequestMapping("/api/admin")
 @Validated
 public class AdminController {
 	
@@ -36,7 +36,7 @@ public class AdminController {
     UserService userService;
 
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/products/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductResponseDto> createProduct(
     		@RequestParam("productName") String productName,
@@ -52,7 +52,8 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
     
-    @GetMapping
+    @GetMapping(value = "/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserSummaryDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUserSummaries());
     }

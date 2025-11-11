@@ -41,6 +41,7 @@ public class Product implements Serializable {
 
 	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
 	private Purchase purchase;
+	
 
 	// bi-directional many-to-one association to Savedproduct
 	@OneToMany(mappedBy = "product")
@@ -182,5 +183,11 @@ public class Product implements Serializable {
 
 		return useroffer;
 	}
+	
+	@Transient //proveri jel prodat
+	public boolean isSold() {
+	    return this.purchase != null;
+	}
+
 
 }

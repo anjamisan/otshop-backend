@@ -47,7 +47,7 @@ public class SecurityConfiguration implements WebMvcConfigurer{
 
 		http.csrf(csrf -> csrf.disable()) // Disable CSRF for testing
 				.cors(Customizer.withDefaults()) // Enable CORS
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/uploads/**", "/api/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/uploads/**", "/api/auth/**", "/api/products/preview").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider)

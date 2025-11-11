@@ -14,5 +14,23 @@ public class SavedproductPK implements Serializable {
 	private int productIdProduct;
 
 	public SavedproductPK() {}
+
+	public int getUserIdUser() {
+		return userIdUser;
+	}
+
+	public void setUserIdUser(int userIdUser) {
+		this.userIdUser = userIdUser;
+	}
+
+	public int getProductIdProduct() {
+		return productIdProduct;
+	}
+
+	public void setProductIdProduct(int productIdProduct) {
+		this.productIdProduct = productIdProduct;
+	}
+	
+	
 }
 
