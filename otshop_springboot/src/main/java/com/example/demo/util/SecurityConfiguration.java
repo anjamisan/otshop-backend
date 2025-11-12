@@ -45,36 +45,16 @@ public class SecurityConfiguration implements WebMvcConfigurer{
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
-		http.csrf(csrf -> csrf.disable()) // Disable CSRF for testing
+		http.csrf(csrf -> csrf.disable()) 
 				.cors(Customizer.withDefaults()) // Enable CORS
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/uploads/**", "/api/auth/**", "/api/products/preview").permitAll()
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/uploads/**", "/api/auth/**", "/api/products/preview", "/api/agesex/**").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authenticationProvider(authenticationProvider)
 			    .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
-
-//        http.csrf()
-//                .disable()
-//                .authorizeHttpRequests()
-//                .requestMatchers("/api/**") //dodaj auth posle
-//                .permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-//    	    http.authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest()
-//    	      .permitAll())
-//    	      .csrf(AbstractHttpConfigurer::disable);
-//    	    
-
-		//return http.build();
 	}
+
 	
 	//prikazivanje slika na frontendu
 	@Override
@@ -90,17 +70,10 @@ public class SecurityConfiguration implements WebMvcConfigurer{
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow Angular
+		configuration.setAllowedOrigins(List.of("http://localhost:4200")); // dopusti Angular
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-		configuration.setAllowCredentials(true); // if you use cookies / session auth
-//        //configuration.setAllowedOrigins(Arrays.asList("*"));
-//        configuration.setAllowedMethods(Arrays.asList("*"));
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
-//        configuration.setAllowCredentials(true);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-
+		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
@@ -114,18 +87,5 @@ public class SecurityConfiguration implements WebMvcConfigurer{
         return factory.createMultipartConfig();
     }
 
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//
-//        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-//        configuration.setAllowedMethods(List.of("GET","POST"));
-//        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//
-//        source.registerCorsConfiguration("/**",configuration);
-//
-//        return source;
-//    }
+
 }

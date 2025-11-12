@@ -68,7 +68,6 @@ public class AuthController {
 
 	@GetMapping("/profile")
 	public ResponseEntity<UserDto> profile(@AuthenticationPrincipal CustomUserDetails userDetails) {
-	    // userDetails is automatically injected based on the JWT
 	    User user = userService.findByUsername(userDetails.getUsername());
 	    return ResponseEntity.ok(new UserDto(user.getIdUser(), user.getUsername(), user.getEmail(), user.isAdmin()));
 	}
