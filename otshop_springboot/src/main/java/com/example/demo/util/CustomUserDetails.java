@@ -41,7 +41,7 @@ public class CustomUserDetails implements UserDetails {
 		return user.getUsername();
 	}
 
-	// --- Account Status Methods (Often hardcoded to true for basic JWT setup) ---
+	/////////////////////////////////////
 
 	@Override
 	public boolean isAccountNonExpired() {

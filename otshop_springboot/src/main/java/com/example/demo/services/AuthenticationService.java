@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,21 +15,17 @@ import model.User;
 
 @Service
 public class AuthenticationService {
-    private final UserRepository userRepository;
+	
+	@Autowired
+    UserRepository userRepository;
     
-    private final PasswordEncoder passwordEncoder;
+	@Autowired
+    PasswordEncoder passwordEncoder;
     
-    private final AuthenticationManager authenticationManager;
+	@Autowired
+    AuthenticationManager authenticationManager;
 
-    public AuthenticationService(
-        UserRepository userRepository,
-        AuthenticationManager authenticationManager,
-        PasswordEncoder passwordEncoder
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+   
 
     public User signup(RegisterUserDto input) {
         User user = new User();

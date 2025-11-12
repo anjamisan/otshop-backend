@@ -41,21 +41,6 @@ public class ProductController {
         } 
     }
     
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDto> updateProduct(
-            @PathVariable int id,
-            @RequestBody ProductUpdateDto dto) {
-        ProductDto updated = productService.updateProduct(id, dto);
-        return ResponseEntity.ok(updated);
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
-    }
     
     @GetMapping("/{productId}/purchase")
     public ResponseEntity<PurchaseDto> getPurchaseByProductId(@PathVariable int productId) {

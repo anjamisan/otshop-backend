@@ -36,8 +36,6 @@ public class ReportService {
         
         InputStream reportStream = getClass().getResourceAsStream("/reports/userPurchase.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-
-        // ✅ 3. Prepare data source
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportData);
 
         // dodaj parametre

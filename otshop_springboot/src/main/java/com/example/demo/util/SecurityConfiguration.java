@@ -56,14 +56,14 @@ public class SecurityConfiguration implements WebMvcConfigurer{
 	}
 
 	
-	//prikazivanje slika na frontendu
+	//prikazivanje slika na frontendu, inace bi trazio iz src/main/static
 	@Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		String uploadPath = "C:/Users/anja/Projects/online-thrift-shop/otshop-backend/otshop_springboot/uploads/";
 
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath)
-                .setCachePeriod(3600); // optional caching
+                .setCachePeriod(3600);
     }
     
 
